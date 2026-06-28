@@ -1,0 +1,36 @@
+{% extends 'base.html' %} {% block title %}Cancel Booking - Confirm{% endblock
+%} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card border-danger">
+      <div class="card-header bg-danger text-white">
+        <h4 class="mb-0">Cancel Booking</h4>
+      </div>
+      <div class="card-body">
+        <p class="mb-3">Are you sure you want to cancel this booking?</p>
+        <div class="alert alert-warning">
+          <strong>Service:</strong> {{ booking.service.title }}<br />
+          <strong>Amount:</strong> ${{ booking.total_price }}<br />
+          <strong>Status:</strong> {{ booking.get_status_display }}<br />
+          <p class="mb-0">
+            <em
+              >This action may not be reversible depending on the service
+              status.</em
+            >
+          </p>
+        </div>
+
+        <form method="post" class="d-flex gap-2">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">
+            Yes, Cancel Booking
+          </button>
+          <a href="{% url 'booking_list' %}" class="btn btn-secondary"
+            >Keep Booking</a
+          >
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Leave Review - Freelance Marketplace{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Leave a Review</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Service:</strong> {{ booking.service.title }}<br>
+                    <strong>Freelancer:</strong> {{ booking.freelancer.user.get_full_name|default:booking.freelancer.user.username }}<br>
+                    <strong>Completed on:</strong> {{ booking.updated_at|date:"M d, Y" }}
+                </div>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {% if field.field.widget.input_type == 'textarea' %}
+                                {% render_form_field field class="form-control" rows="6" %}
+                            {% else %}
+                                {% render_form_field field class="form-select" %}
+                            {% endif %}
+                            {% if field.errors %}
+                                <div class="invalid-feedback d-block">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
+                        <a href="{% url 'booking_list' %}" class="btn btn-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

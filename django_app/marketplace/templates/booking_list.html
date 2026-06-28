@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+```
+<h2 class="mb-4">My Bookings</h2>
+
+{% if bookings %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>User</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for booking in bookings %}
+                    <tr>
+
+                        <!-- SERVICE -->
+                        <td>
+                            <a href="{% url 'service_detail' booking.service.id %}">
+                                {{ booking.service.title }}
+                            </a>
+                        </td>
+
+                        <!-- USER -->
+                        <td>
+                            {% if booking.client.user.id == user.id %}
+                                <a href="{% url 'user_profile' booking.freelancer.user.id %}">
+                                    {{ booking.freelancer.user.username }}
+                                </a>
+                            {% else %}
+                                <a href="{% url 'user_profile' booking.client.user.id %}">
+                                    {{ booking.client.user.username }}
+                                </a>
+                            {% endif %}
+                        </td>
+
+                        <!-- STATUS -->
+                        <td>
+                            <span class="badge bg-info">
+                                {{ booking.status }}
+                            </span>
+                        </td>
+
+                        <!-- PRICE -->
+                        <td>
+                            ${{ booking.total_price }}
+                        </td>
+
+                        <!-- DATE -->
+                        <td>
+                            {{ booking.created_at|date:"M d, Y" }}
+                        </td>
+
+                        <!-- ACTIONS -->
+                        <td>
+
+                            {% if booking.status != 'completed' and booking.status != 'cancelled' %}
+                                <form method="post" action="{% url 'cancel_booking' booking.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        Cancel
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            {% if booking.status == 'completed' and booking.review %}
+                                <small class="text-success">Reviewed</small>
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+{% else %}
+    <div class="alert alert-info text-center">
+        No bookings yet.
+    </div>
+{% endif %}
+```
+
+</div>
+
+{% endblock %}

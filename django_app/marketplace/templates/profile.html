@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ profile.user.username }} - Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+<div class="row">
+
+<!-- LEFT -->
+<div class="col-lg-4">
+    <div class="card mb-4">
+
+        {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" class="card-img-top" style="height:300px;object-fit:cover;">
+        {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center" style="height:300px;">
+                <span class="text-muted">No Image</span>
+            </div>
+        {% endif %}
+
+        <div class="card-body text-center">
+            <h4>{{ profile.user.username }}</h4>
+
+            <p class="text-muted">
+                {{ profile.user_type }}
+            </p>
+
+            {% if profile.rating %}
+                <div>⭐ {{ profile.rating }}</div>
+            {% endif %}
+
+            {% if profile.is_verified %}
+                <span class="badge bg-success">Verified</span>
+            {% else %}
+                <span class="badge bg-secondary">Unverified</span>
+            {% endif %}
+
+            {% if user.is_authenticated and user.id == profile.user.id %}
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary mt-3 w-100">
+                    Edit Profile
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<!-- RIGHT -->
+<div class="col-lg-8">
+
+    <!-- ABOUT -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>About</h5>
+        </div>
+        <div class="card-body">
+            <p>{{ profile.bio|default:"No bio provided" }}</p>
+        </div>
+    </div>
+
+    <!-- DETAILS -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Details</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Email:</strong> {{ profile.user.email }}</p>
+        </div>
+    </div>
+
+    <!-- SERVICES -->
+    {% if services %}
+    <div class="card">
+        <div class="card-header">
+            <h5>Services</h5>
+        </div>
+        <div class="card-body">
+
+            {% for service in services %}
+                <div class="mb-3 border-bottom pb-2">
+                    <h6>
+                        <a href="{% url 'service_detail' service.id %}">
+                            {{ service.title }}
+                        </a>
+                    </h6>
+
+                    <p class="text-muted">
+                        {{ service.description|truncatewords:10 }}
+                    </p>
+
+                    <strong>${{ service.price }}</strong>
+
+                    {% if service.rating %}
+                        <div>⭐ {{ service.rating }}</div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No services yet</p>
+            {% endfor %}
+
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+
+</div>
+</div>
+
+{% endblock %}
